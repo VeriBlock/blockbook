@@ -13,7 +13,7 @@ on:
 
 jobs:
   linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - name: setup Go
         uses: actions/setup-go@v2
@@ -21,7 +21,7 @@ jobs:
           go-version: '^1.14.2'
       - name: install dependencies
         run: sudo apt-get update && sudo apt-get install -y \
-             libgflags-dev libsnappy-dev zlib1g-dev libbz2-dev liblz4-dev;
+             build-essential git wget pkg-config libzmq3-dev libgflags-dev libsnappy-dev zlib1g-dev libbz2-dev liblz4-dev;
       - name: install rocksdb
         run: |
           (
