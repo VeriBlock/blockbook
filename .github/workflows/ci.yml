@@ -45,7 +45,8 @@ jobs:
           )
       - name: checkout
         uses: actions/checkout@v2
-        path: $GOPATH/src
+        with:
+          path: $GOPATH/src
       - name: build blockbook
         run: |
           cd $GOPATH/src/blockbook;
