@@ -48,6 +48,4 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: build blockbook
-        run: |
-          cd src/blockbook;
-          go build
+        run: go build
