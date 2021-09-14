@@ -22,9 +22,8 @@ jobs:
           echo "::set-output name=timestamp::${current_date}"
       - name: ccache cache files
         if: github.event_name == 'push' || github.event_name == 'pull_request'
-        uses: actions/cache@v1.1.0
+        uses: hendrikmuhs/ccache-action@v1
         with:
-          path: ~/.ccache
           key: linux-ccache-${{ steps.cache_timestamp.outputs.timestamp }}
           restore-keys: |
             linux-ccache-
