@@ -15,18 +15,6 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     steps:
-      - name: Prepare ccache timestamp
-        id: cache_timestamp
-        run: |
-          current_date=`date --utc +%Y%m%d_%H%M%SZ`
-          echo "::set-output name=timestamp::${current_date}"
-      - name: ccache cache files
-        if: github.event_name == 'push' || github.event_name == 'pull_request'
-        uses: hendrikmuhs/ccache-action@v1
-        with:
-          key: linux-ccache-${{ steps.cache_timestamp.outputs.timestamp }}
-          restore-keys: |
-            linux-ccache-
       - name: setup Go
         uses: actions/setup-go@v2
         with:
@@ -57,11 +45,9 @@ jobs:
           make;
           sudo make install
           )
-#      - name: checkout
-#        uses: actions/checkout@v2
-#        with:
-#          path: $GOPATH/src
-#      - name: build blockbook
-#        run: |
-#          cd $GOPATH/src/blockbook;
-#          go build
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: build blockbook
+        run: |
+          cd src/blockbook;
+          go build
