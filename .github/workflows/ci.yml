@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - feature/*
+
+  pull_request:
+    branches:
+      - master
+      - feature/*
+
+jobs:
+  linux:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.14.2'
+        run: go version
+      - name: install dependencies
+        run: sudo apt-get update && sudo apt-get install -y \
+             build-essential git wget pkg-config libzmq3-dev libgflags-dev libsnappy-dev zlib1g-dev libbz2-dev liblz4-dev;
+      - name: install rocksdb
+        run: |
+          (
+          git clone https://github.com/facebook/rocksdb.git;
+          cd rocksdb;
+          git checkout v6.8.1;
+          CFLAGS=-fPIC CXXFLAGS=-fPIC sudo make release
+          )
+      - name: setup env vars for rocksdb
+        env:
+          CGO_CFLAGS: "-I/path/to/rocksdb/include"
+          CGO_LDFLAGS: "-L/path/to/rocksdb -lrocksdb -lstdc++ -lm -lz -ldl -lbz2 -lsnappy -llz4"
+      - name: install ZeroMQ
+        run: |
+          (
+          git clone https://github.com/zeromq/libzmq;
+          cd libzmq;
+          ./autogen.sh;
+          ./configure;
+          make;
+          sudo make install
+          )
+      - name: checkout
+        uses: actions/checkout@v2
+        path: $GOPATH/src
+      - name: build blockbook
+        run: |
+          cd $GOPATH/src/blockbook;
+          go build
