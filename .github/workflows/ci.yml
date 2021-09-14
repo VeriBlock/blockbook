@@ -45,4 +45,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: build blockbook
+        env:
+          CGO_CFLAGS: "-I/usr/local/include"
+          CGO_LDFLAGS: "-L/usr/local/lib -lrocksdb -lstdc++ -lm -lz -ldl -lbz2 -lsnappy -llz4"
         run: go build
