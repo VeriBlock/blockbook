@@ -58,16 +58,11 @@ jobs:
           make;
           sudo make install
           )
-      - name: checkout
-        uses: actions/checkout@v2
-        with:
-          path: $GOPATH/src
-      - name: Extract branch name & commit
-        id: extract_branch
-        run: |
-          echo "::set-output name=git_hash::$(git rev-parse --short=7 "$GITHUB_SHA")"
-          echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//\./g')"
-      - name: build blockbook
-        run: |
-          cd $GOPATH/src/blockbook;
-          go build
+#      - name: checkout
+#        uses: actions/checkout@v2
+#        with:
+#          path: $GOPATH/src
+#      - name: build blockbook
+#        run: |
+#          cd $GOPATH/src/blockbook;
+#          go build
