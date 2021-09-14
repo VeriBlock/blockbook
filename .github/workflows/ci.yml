@@ -15,6 +15,24 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     steps:
+      - name: Extract branch name & commit
+        id: extract_branch
+        run: |
+          echo "::set-output name=git_hash::$(git rev-parse --short=7 "$GITHUB_SHA")"
+          echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//\./g')"
+      - name: Prepare ccache timestamp
+        id: cache_timestamp
+        run: |
+          current_date=`date --utc +%Y%m%d_%H%M%SZ`
+          echo "::set-output name=timestamp::${current_date}"
+      - name: ccache cache files
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        uses: actions/cache@v1.1.0
+        with:
+          path: ~/.ccache
+          key: linux-ccache-${{ steps.cache_timestamp.outputs.timestamp }}
+          restore-keys: |
+            linux-ccache-
       - name: setup Go
         uses: actions/setup-go@v2
         with:
@@ -22,7 +40,7 @@ jobs:
       - name: install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential git wget pkg-config libzmq3-dev libgflags-dev libsnappy-dev zlib1g-dev
+          sudo apt-get install -y ccache build-essential git wget pkg-config libzmq3-dev libgflags-dev libsnappy-dev zlib1g-dev
           sudo apt-get install -y libbz2-dev liblz4-dev
       - name: install rocksdb
         run: |
