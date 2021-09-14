@@ -30,7 +30,6 @@ jobs:
           git checkout v6.8.1;
           CFLAGS=-fPIC CXXFLAGS=-fPIC sudo make release
           )
-      - name: setup env vars for rocksdb
         env:
           CGO_CFLAGS: "-I/path/to/rocksdb/include"
           CGO_LDFLAGS: "-L/path/to/rocksdb -lrocksdb -lstdc++ -lm -lz -ldl -lbz2 -lsnappy -llz4"
